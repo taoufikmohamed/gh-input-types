@@ -1,0 +1,82 @@
+name: Build & Test Demo
+
+on:
+  workflow_dispatch:
+    inputs:
+      project_name:
+        description: "Name of the project"
+        required: true
+        default: "my-app"
+        type: string
+
+      run_tests:
+        description: "Run tests?"
+        required: false
+        default: true
+        type: boolean
+
+      runtime:
+        description: "Select runtime environment"
+        required: true
+        default: "node"
+        type: choice
+        options:
+          - node
+          - python
+          - go
+
+      retries:
+        description: "Number of retries if build fails"
+        required: false
+        default: 1
+        type: number
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Show input values
+        run: |
+          echo "Project: ${{ github.event.inputs.project_name }}"
+          echo "Run tests: ${{ github.event.inputs.run_tests }}"
+          echo "Runtime: ${{ github.event.inputs.runtime }}"
+          echo "Retries: ${{ github.event.inputs.retries }}"
+
+      # Branch on runtime
+      - name: Setup Node
+        if: ${{ github.event.inputs.runtime == 'node' }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Setup Python
+        if: ${{ github.event.inputs.runtime == 'python' }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Setup Go
+        if: ${{ github.event.inputs.runtime == 'go' }}
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+
+      - name: Run build script
+        run: echo "🔨 Building ${{ github.event.inputs.project_name }} using ${{ github.event.inputs.runtime }}..."
+
+      # Conditional test step
+      - name: Run tests
+        if: ${{ github.event.inputs.run_tests == 'true' }}
+        run: echo "✅ Running tests for ${{ github.event.inputs.project_name }}"
+
+      # Number-driven retry simulation
+      - name: Retry loop
+        run: |
+          echo "Will retry build ${{ github.event.inputs.retries }} times if it fails."
+          for i in $(seq 1 ${{ github.event.inputs.retries }}); do
+            echo "Attempt $i..."
+            # replace this with real build/test commands
+          done
