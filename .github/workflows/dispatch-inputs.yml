@@ -41,3 +41,33 @@ jobs:
           echo "Number input: ${{ github.event.inputs.example_number }}"
           echo "Boolean input: ${{ github.event.inputs.example_boolean }}"
           echo "Choice input: ${{ github.event.inputs.example_choice }}"
+      # Boolean example
+      - name: Run only if feature enabled
+        if: ${{ github.event.inputs.example_boolean == 'true' }}
+        run: echo "✅ Feature is ENABLED"
+
+      - name: Run only if feature disabled
+        if: ${{ github.event.inputs.example_boolean == 'false' }}
+        run: echo "❌ Feature is DISABLED"
+
+      # Choice branching
+      - name: Run for DEV
+        if: ${{ github.event.inputs.example_choice == 'dev' }}
+        run: echo "Deploying to DEVELOPMENT environment..."
+
+      - name: Run for STAGING
+        if: ${{ github.event.inputs.example_choice == 'staging' }}
+        run: echo "Deploying to STAGING environment..."
+
+      - name: Run for PROD
+        if: ${{ github.event.inputs.example_choice == 'prod' }}
+        run: echo "🚀 Deploying to PRODUCTION environment!"
+
+      # Number check example
+      - name: Check number > 50
+        if: ${{ fromJSON(github.event.inputs.example_number) > 50 }}
+        run: echo "Number is greater than 50"
+
+      - name: Check number <= 50
+        if: ${{ fromJSON(github.event.inputs.example_number) <= 50 }}
+        run: echo "Number is 50 or less"
