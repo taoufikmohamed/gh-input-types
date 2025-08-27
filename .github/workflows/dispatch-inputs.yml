@@ -1,0 +1,43 @@
+name: Dispatch Inputs Demo
+
+on:
+  workflow_dispatch:
+    inputs:
+      example_string:
+        description: "Enter a string value"
+        required: true
+        default: "hello world"
+        type: string
+
+      example_number:
+        description: "Enter a number"
+        required: false
+        default: 42
+        type: number
+
+      example_boolean:
+        description: "Enable feature?"
+        required: false
+        default: true
+        type: boolean
+
+      example_choice:
+        description: "Pick an environment"
+        required: true
+        default: "dev"
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+
+jobs:
+  show-inputs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print all inputs
+        run: |
+          echo "String input: ${{ github.event.inputs.example_string }}"
+          echo "Number input: ${{ github.event.inputs.example_number }}"
+          echo "Boolean input: ${{ github.event.inputs.example_boolean }}"
+          echo "Choice input: ${{ github.event.inputs.example_choice }}"
